@@ -1,17 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="styles.css">
-  <title>Vanilla JavaScript App</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mr.Userbox</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            position: relative; /* Allow content to be positioned relatively */
+        }
+        
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Ensure canvas is behind the main content */
+        }
+        
+        main {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1; /* Ensure main content stays on top */
+        }        
+        
+        .main-image {
+            width: 50%; /* Scale the image down to 50% of the container's width */
+            height: auto;
+            border-radius: 15px; /* Rounded edges */
+        }
+        
+        .icons {
+            margin-top: 20px;
+        }
+        
+        .icons a {
+            margin: 0 10px;
+            text-decoration: none;
+        }
+        
+        .icons img {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0; /* Ensure icons are not rounded */
+            background-color: white; /* White background for the icons */
+            padding: 5px; /* Add some padding to make the background visible */
+            border-radius: 5%; /* Makes the background circular */
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Optional: add a subtle shadow for better visibility */
+        }     
+        /* New row styling */
+        .icon-row {
+            margin-top: 15px; /* Space between the rows */
+        }       
+        
+    </style>
 </head>
-
 <body>
-  <main>
-    <h1>Vanilla JavaScript App</h1>
-  </main>
-</body>
+    <main>
+        <img src="cat.jpg" alt="Image of a Cool Cat" class="main-image"> <!-- Add class="main-image" here -->
+        <div class="icons">
+            <a href="https://www.linkedin.com/in/mr-userbox-29178b13" target="_blank">
+                <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" alt="LinkedIn icon">
+            </a>
+            <a href="https://github.com/userbox020" target="_blank">
+                <img src="https://cdn-icons-png.flaticon.com/512/733/733609.png" alt="GitHub icon">
+            </a>
+            <a href="https://www.fiverr.com/leonvaldez01" target="_blank">
+                <img src="https://cdn-icons-png.flaticon.com/512/732/732025.png" alt="Fiverr icon">
+            </a>
+        </div>
+        <!-- Second Row of Icons -->
+        <div class="icons icon-row">
+            <a href="http://mruserbox.s3-website-us-east-1.amazonaws.com/" >
+                <img src="https://cdn-icons-png.flaticon.com/512/11378/11378728.png" alt="Amazon Web Services">
+            </a>
+            <a href="https://mruserbox-612b2.web.app/" >
+                <img src="https://cdn-icons-png.flaticon.com/512/873/873117.png" alt="Google Cloud icon">
+            </a>
+        </div>
 
+    </main>
+
+    <script>
+        // init
+        var maxx = document.body.clientWidth;
+        var maxy = document.body.clientHeight;
+        var halfx = maxx / 2;
+        var halfy = maxy / 2;
+        var canvas = document.createElement("canvas");
+        document.body.appendChild(canvas);
+        canvas.width = maxx;
+        canvas.height = maxy;
+        var context = canvas.getContext("2d");
+        var dotCount = 200;
+        var dots = [];
+        // create dots
+        for (var i = 0; i < dotCount; i++) {
+        dots.push(new dot());
+        }
+
+        // dots animation
+        function render() {
+        context.fillStyle = "#000000";
+        context.fillRect(0, 0, maxx, maxy);
+        for (var i = 0; i < dotCount; i++) {
+            dots[i].draw();
+            dots[i].move();
+        }
+        requestAnimationFrame(render);
+        }
+
+        // dots class
+        // @constructor
+        function dot() {
+        
+        this.rad_x = 2 * Math.random() * halfx + 1;
+        this.rad_y = 1.2 * Math.random() * halfy + 1;
+        this.alpha = Math.random() * 360 + 1;
+        this.speed = Math.random() * 100 < 50 ? 1 : -1;
+        this.speed *= 0.1;
+        this.size = Math.random() * 5 + 1;
+        this.color = Math.floor(Math.random() * 256);
+        
+        }
+
+        // drawing dot
+        dot.prototype.draw = function() {
+        
+        // calc polar coord to decart
+        var dx = halfx + this.rad_x * Math.cos(this.alpha / 180 * Math.PI);
+        var dy = halfy + this.rad_y * Math.sin(this.alpha / 180 * Math.PI);
+        // set color
+        context.fillStyle = "rgb(" + this.color + "," + this.color + "," + this.color + ")";
+        // draw dot
+        context.fillRect(dx, dy, this.size, this.size);
+        
+        };
+
+        // calc new position in polar coord
+        dot.prototype.move = function() {
+        
+        this.alpha += this.speed;
+        // change color
+        if (Math.random() * 100 < 50) {
+            this.color += 1;
+        } else {
+            this.color -= 1;
+        }
+        
+        };
+
+        // start animation
+        render();        
+    </script>
+
+</body>
 </html>
